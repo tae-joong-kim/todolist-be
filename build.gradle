@@ -24,6 +24,7 @@ dependencies {
 	implementation 'org.modelmapper:modelmapper:2.4.5'
 	implementation platform('com.amazonaws:aws-java-sdk-bom:1.11.1000')
 	implementation 'com.amazonaws:aws-java-sdk-s3'
+	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.3'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'mysql:mysql-connector-java'
 	annotationProcessor 'org.projectlombok:lombok'
