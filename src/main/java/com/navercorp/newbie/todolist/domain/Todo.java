@@ -17,6 +17,7 @@ public class Todo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String title;
     private String description;
 
     private String uploadFileName;
@@ -25,10 +26,6 @@ public class Todo {
     private String contentType;
 
     private Boolean isDone;
-
-    private LocalDateTime deadline;
-
-    private Integer priority;
 
     @Column(updatable = false)
     private LocalDateTime createdAt;
@@ -45,8 +42,6 @@ public class Todo {
 
         this.description = todoCreateForm.getDescription();
         this.isDone = Boolean.FALSE;
-        this.deadline = todoCreateForm.getDeadline();
-        this.priority = todoCreateForm.getPriority();
         this.createdAt = LocalDateTime.now();
         this.modifiedAt = this.createdAt;
     }
@@ -62,8 +57,6 @@ public class Todo {
 
         this.description = todoUpdateForm.getDescription();
         this.isDone = todoUpdateForm.getIsDone();
-        this.deadline = todoUpdateForm.getDeadline();
-        this.priority = todoUpdateForm.getPriority();
         this.modifiedAt = LocalDateTime.now();
     }
 

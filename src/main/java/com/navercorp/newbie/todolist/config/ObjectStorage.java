@@ -26,7 +26,14 @@ public class ObjectStorage {
     @Value("${objectstorage.bucketName}")
     private String bucketName;
 
-    public ObjectMetadata initObjectMetadata(MultipartFile multipartFile) {
+    private AmazonS3 getS3Client() {
+        return AmazonS3ClientBuilder.standard()
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
+                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
+                .build();
+    }
+
+    private ObjectMetadata initObjectMetadata(MultipartFile multipartFile) {
         ObjectMetadata objectMetadata = new ObjectMetadata();
 
         objectMetadata.setContentType(multipartFile.getContentType());
@@ -36,35 +43,31 @@ public class ObjectStorage {
     }
 
     public void fileUpload(MultipartFile multipartFile, String storeFileName) {
-        // S3 client
-        final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
-                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
-                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
-                .build();
+        final AmazonS3 s3 = getS3Client();
 
-        // upload file
         try {
             ObjectMetadata objectMetadata = initObjectMetadata(multipartFile);
-            s3.putObject(new PutObjectRequest(bucketName, storeFileName, multipartFile.getInputStream(), objectMetadata));
+            InputStream inputStream = multipartFile.getInputStream();
+
+            s3.putObject(bucketName, storeFileName, inputStream, objectMetadata);
+
+            inputStream.close();
         } catch (SdkClientException | IOException e) {
             e.printStackTrace();
         }
     }
 
-    public byte[] fileDownload(String storeFileName) {
-        // S3 client
-        final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
-                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
-                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
-                .build();
+    public ObjectData fileDownload(String storeFileName) {
+        final AmazonS3 s3 = getS3Client();
 
         byte[] bytes = null;
+        String contentType = null;
 
-        // download object
         try {
             S3Object s3Object = s3.getObject(bucketName, storeFileName);
-            S3ObjectInputStream s3ObjectInputStream = s3Object.getObjectContent();
 
+            contentType = s3Object.getObjectMetadata().getContentType();
+            S3ObjectInputStream s3ObjectInputStream = s3Object.getObjectContent();
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
             byte[] bytesArray = new byte[4096];
@@ -72,7 +75,6 @@ public class ObjectStorage {
             while ((bytesRead = s3ObjectInputStream.read(bytesArray)) != -1) {
                 byteArrayOutputStream.write(bytesArray, 0, bytesRead);
             }
-
             bytes = byteArrayOutputStream.toByteArray();
 
             byteArrayOutputStream.close();
@@ -81,6 +83,6 @@ public class ObjectStorage {
             e.printStackTrace();
         }
 
-        return bytes;
+        return new ObjectData(bytes, contentType);
     }
 }

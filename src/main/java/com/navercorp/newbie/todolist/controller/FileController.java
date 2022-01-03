@@ -1,5 +1,6 @@
 package com.navercorp.newbie.todolist.controller;
 
+import com.navercorp.newbie.todolist.config.ObjectData;
 import com.navercorp.newbie.todolist.domain.Todo;
 import com.navercorp.newbie.todolist.config.ObjectStorage;
 import com.navercorp.newbie.todolist.service.TodoService;
@@ -24,10 +25,10 @@ public class FileController {
         String storeFileName = todo.getStoreFileName();
         String contentType = todo.getContentType();
 
-        byte[] bytes = objectStorage.fileDownload(storeFileName);
+        ObjectData objectData = objectStorage.fileDownload(storeFileName);
 
         return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(contentType))
-                .body(bytes);
+                .contentType(MediaType.parseMediaType(objectData.getContentType()))
+                .body(objectData.getFile());
     }
 }

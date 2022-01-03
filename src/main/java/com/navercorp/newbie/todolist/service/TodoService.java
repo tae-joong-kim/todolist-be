@@ -20,16 +20,16 @@ public class TodoService {
     private final TodoRepository todoRepository;
     private final ObjectStorage objectStorage;
 
-    public void fileUpload(MultipartFile multipartFile, String storeFileName) throws IOException {
+    public void fileUpload(MultipartFile multipartFile, String storeFileName) {
         if (multipartFile != null) {
             String uploadFileName = multipartFile.getOriginalFilename();
-            if (uploadFileName != null){
+            if (uploadFileName != null) {
                 objectStorage.fileUpload(multipartFile, storeFileName);
             }
         }
     }
 
-    public Todo createTodo(TodoCreateForm todoCreateForm) throws IOException {
+    public Todo createTodo(TodoCreateForm todoCreateForm) {
         Todo todo = new Todo();
         todo.create(todoCreateForm);
 
