@@ -2,6 +2,7 @@ package com.navercorp.newbie.todolist.controller;
 
 import com.navercorp.newbie.todolist.domain.Todo;
 import com.navercorp.newbie.todolist.dto.TodoCreateForm;
+import com.navercorp.newbie.todolist.dto.TodoGetDetailResponseDto;
 import com.navercorp.newbie.todolist.dto.TodoGetResponseDto;
 import com.navercorp.newbie.todolist.dto.TodoUpdateForm;
 import com.navercorp.newbie.todolist.service.TodoService;
@@ -15,23 +16,29 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/todolist")
+@RequestMapping("/api/todo")
 public class TodoController {
     
     private final TodoService todoService;
     private final ModelMapper modelMapper;
 
     @PostMapping
-    public TodoGetResponseDto createTodo(TodoCreateForm todoCreateForm) throws IOException {
+    public TodoGetDetailResponseDto createTodo(TodoCreateForm todoCreateForm) throws IOException {
         Todo todo = todoService.createTodo(todoCreateForm);
-        return modelMapper.map(todo, TodoGetResponseDto.class);
+        return modelMapper.map(todo, TodoGetDetailResponseDto.class);
     }
 
     @GetMapping
-    public List<TodoGetResponseDto> readTodo(){
-        return todoService.readTodo().stream()
+    public List<TodoGetResponseDto> readTodoAsList(){
+        return todoService.readTodoAsList().stream()
                 .map(todo -> modelMapper.map(todo, TodoGetResponseDto.class))
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping("/{id}")
+    public TodoGetDetailResponseDto readDetailTodo(@PathVariable Long id){
+        Todo todo = todoService.readDetailTodo(id);
+        return modelMapper.map(todo, TodoGetDetailResponseDto.class);
     }
 
     @PutMapping("/{id}")

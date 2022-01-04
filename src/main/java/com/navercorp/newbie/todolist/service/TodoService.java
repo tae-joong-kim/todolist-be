@@ -33,24 +33,29 @@ public class TodoService {
         Todo todo = new Todo();
         todo.create(todoCreateForm);
 
-        MultipartFile multipartFile = todoCreateForm.getMultipartFile();
+        MultipartFile file = todoCreateForm.getFile();
         String storeFileName = todo.getStoreFileName();
 
-        fileUpload(multipartFile, storeFileName);
+        fileUpload(file, storeFileName);
 
         return todoRepository.save(todo);
     }
 
     @Transactional(readOnly = true)
-    public List<Todo> readTodo(){
+    public List<Todo> readTodoAsList(){
         return todoRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public Todo readDetailTodo(Long id){
+        return todoRepository.findById(id).get();
     }
 
     public Todo updateTodo(Long id, TodoUpdateForm todoUpdateForm) throws IOException {
         Todo todo = todoRepository.findById(id).get();
         todo.update(todoUpdateForm);
 
-        MultipartFile multipartFile = todoUpdateForm.getMultipartFile();
+        MultipartFile multipartFile = todoUpdateForm.getFile();
         String storeFileName = todo.getStoreFileName();
 
         fileUpload(multipartFile, storeFileName);
@@ -62,6 +67,7 @@ public class TodoService {
         todoRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     public Todo readTodoByStoreFileName(String storeFileName) {
         return todoRepository.findByStoreFileName(storeFileName).get();
     }

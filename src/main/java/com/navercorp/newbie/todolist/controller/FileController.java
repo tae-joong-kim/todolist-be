@@ -18,12 +18,11 @@ public class FileController {
     private final TodoService todoService;
     private final ObjectStorage objectStorage;
 
-    @GetMapping("/files/{fileName}")
+    @GetMapping("/api/files/{fileName}")
     public ResponseEntity<byte[]> getFileResource(@PathVariable String fileName) {
         Todo todo = todoService.readTodoByStoreFileName(fileName);
 
         String storeFileName = todo.getStoreFileName();
-        String contentType = todo.getContentType();
 
         ObjectData objectData = objectStorage.fileDownload(storeFileName);
 

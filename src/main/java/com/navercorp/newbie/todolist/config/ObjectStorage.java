@@ -26,28 +26,12 @@ public class ObjectStorage {
     @Value("${objectstorage.bucketName}")
     private String bucketName;
 
-    private AmazonS3 getS3Client() {
-        return AmazonS3ClientBuilder.standard()
-                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
-                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
-                .build();
-    }
-
-    private ObjectMetadata initObjectMetadata(MultipartFile multipartFile) {
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-
-        objectMetadata.setContentType(multipartFile.getContentType());
-        objectMetadata.setContentLength(multipartFile.getSize());
-
-        return objectMetadata;
-    }
-
-    public void fileUpload(MultipartFile multipartFile, String storeFileName) {
+    public void fileUpload(MultipartFile file, String storeFileName) {
         final AmazonS3 s3 = getS3Client();
 
         try {
-            ObjectMetadata objectMetadata = initObjectMetadata(multipartFile);
-            InputStream inputStream = multipartFile.getInputStream();
+            ObjectMetadata objectMetadata = initObjectMetadata(file);
+            InputStream inputStream = file.getInputStream();
 
             s3.putObject(bucketName, storeFileName, inputStream, objectMetadata);
 
@@ -60,28 +44,51 @@ public class ObjectStorage {
     public ObjectData fileDownload(String storeFileName) {
         final AmazonS3 s3 = getS3Client();
 
-        byte[] bytes = null;
-        String contentType = null;
-
+        ObjectData objectData = null;
         try {
             S3Object s3Object = s3.getObject(bucketName, storeFileName);
 
-            contentType = s3Object.getObjectMetadata().getContentType();
-            S3ObjectInputStream s3ObjectInputStream = s3Object.getObjectContent();
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-            byte[] bytesArray = new byte[4096];
-            int bytesRead = -1;
-            while ((bytesRead = s3ObjectInputStream.read(bytesArray)) != -1) {
-                byteArrayOutputStream.write(bytesArray, 0, bytesRead);
-            }
-            bytes = byteArrayOutputStream.toByteArray();
-
-            byteArrayOutputStream.close();
-            s3ObjectInputStream.close();
+            objectData = readDataAndContentType(s3Object);
         } catch (SdkClientException | IOException e) {
             e.printStackTrace();
         }
+
+        return objectData;
+    }
+
+    private AmazonS3 getS3Client() {
+        return AmazonS3ClientBuilder.standard()
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
+                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
+                .build();
+    }
+
+    private ObjectMetadata initObjectMetadata(MultipartFile file) {
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+
+        objectMetadata.setContentType(file.getContentType());
+        objectMetadata.setContentLength(file.getSize());
+
+        return objectMetadata;
+    }
+
+    private ObjectData readDataAndContentType(S3Object s3Object) throws IOException {
+        byte[] bytes = null;
+        String contentType = null;
+
+        contentType = s3Object.getObjectMetadata().getContentType();
+        S3ObjectInputStream s3ObjectInputStream = s3Object.getObjectContent();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        byte[] bytesArray = new byte[4096];
+        int bytesRead = -1;
+        while ((bytesRead = s3ObjectInputStream.read(bytesArray)) != -1) {
+            byteArrayOutputStream.write(bytesArray, 0, bytesRead);
+        }
+        bytes = byteArrayOutputStream.toByteArray();
+
+        byteArrayOutputStream.close();
+        s3ObjectInputStream.close();
 
         return new ObjectData(bytes, contentType);
     }

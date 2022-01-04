@@ -23,8 +23,6 @@ public class Todo {
     private String uploadFileName;
     private String storeFileName;
 
-    private String contentType;
-
     private Boolean isDone;
 
     @Column(updatable = false)
@@ -32,14 +30,14 @@ public class Todo {
     private LocalDateTime modifiedAt;
 
     public void create(TodoCreateForm todoCreateForm) {
-        MultipartFile multipartFile = todoCreateForm.getMultipartFile();
+        MultipartFile multipartFile = todoCreateForm.getFile();
 
         if(multipartFile != null){
             this.uploadFileName = multipartFile.getOriginalFilename();
             this.storeFileName = getStoreFileName(this.uploadFileName);
-            this.contentType = todoCreateForm.getMultipartFile().getContentType();
         }
 
+        this.title = todoCreateForm.getTitle();
         this.description = todoCreateForm.getDescription();
         this.isDone = Boolean.FALSE;
         this.createdAt = LocalDateTime.now();
@@ -47,14 +45,14 @@ public class Todo {
     }
 
     public void update(TodoUpdateForm todoUpdateForm) {
-        MultipartFile multipartFile = todoUpdateForm.getMultipartFile();
+        MultipartFile multipartFile = todoUpdateForm.getFile();
 
         if(multipartFile != null){
             this.uploadFileName = multipartFile.getOriginalFilename();
             this.storeFileName = getStoreFileName(this.uploadFileName);
-            this.contentType = todoUpdateForm.getMultipartFile().getContentType();
         }
 
+        this.title = todoUpdateForm.getTitle();
         this.description = todoUpdateForm.getDescription();
         this.isDone = todoUpdateForm.getIsDone();
         this.modifiedAt = LocalDateTime.now();
