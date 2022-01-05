@@ -124,6 +124,7 @@ class TodoServiceTest {
     }
 
     @Test
+    @Transactional
     void deleteTodo() {
 
         // given
@@ -139,6 +140,7 @@ class TodoServiceTest {
     }
 
     @Test
+    @Transactional
     void readTodoByStoreFileName() throws Exception {
 
         // given
