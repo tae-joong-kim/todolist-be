@@ -146,7 +146,6 @@ public class FileSafer {
             dos.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\"" + filename + "\"" + crlf);
             dos.writeBytes("Content-Type: "+ URLConnection.guessContentTypeFromName(filename) + crlf);
             dos.writeBytes(crlf);
-            System.out.println("multipartFile.getOriginalFilename() = " + filename);
 
             InputStream inputStream = new ByteArrayInputStream(file);
             byte[] buffer = new byte[4096];
