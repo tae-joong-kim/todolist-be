@@ -107,10 +107,12 @@ class TodoServiceTest {
     void readDetailTodo() {
 
         // given
-        Todo repositoryTodo = todoRepository.findById(1L).get();
+//        Todo repositoryTodo = todoRepository.findById(1L).get();
+        List<Todo> all = todoRepository.findAll();
+        Todo repositoryTodo = all.get(all.size() - 1);
 
         // when
-        Todo serviceTodo = todoService.readDetailTodo(1L);
+        Todo serviceTodo = todoService.readDetailTodo(repositoryTodo.getId());
 
         // then
         assertThat(serviceTodo.getId()).isEqualTo(repositoryTodo.getId());
@@ -129,9 +131,10 @@ class TodoServiceTest {
 
         // given
         List<Todo> beforeTodos = todoService.readTodoAsList();
+        Todo todo = beforeTodos.get(beforeTodos.size() - 1);
 
         // when
-        todoService.deleteTodo(1L);
+        todoService.deleteTodo(todo.getId());
 
         List<Todo> afterTodos = todoService.readTodoAsList();
 
