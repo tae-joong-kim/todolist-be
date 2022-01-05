@@ -1,11 +1,13 @@
 package com.navercorp.newbie.todolist.domain;
 
+import com.navercorp.newbie.todolist.config.FileSafer;
 import com.navercorp.newbie.todolist.dto.TodoCreateForm;
 import com.navercorp.newbie.todolist.dto.TodoUpdateForm;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -29,7 +31,8 @@ public class Todo {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
-    public void create(TodoCreateForm todoCreateForm) {
+
+    public void create(TodoCreateForm todoCreateForm) throws Exception {
         MultipartFile multipartFile = todoCreateForm.getFile();
 
         if(multipartFile != null){
@@ -44,7 +47,7 @@ public class Todo {
         this.modifiedAt = this.createdAt;
     }
 
-    public void update(TodoUpdateForm todoUpdateForm) {
+    public void update(TodoUpdateForm todoUpdateForm) throws Exception {
         MultipartFile multipartFile = todoUpdateForm.getFile();
 
         if(multipartFile != null){
@@ -56,6 +59,11 @@ public class Todo {
         this.description = todoUpdateForm.getDescription();
         this.isDone = todoUpdateForm.getIsDone();
         this.modifiedAt = LocalDateTime.now();
+    }
+
+    public void setFileName() throws Exception {
+        this.uploadFileName = null;
+        this.storeFileName = null;
     }
 
     public String getStoreFileName(String uploadFileName) {

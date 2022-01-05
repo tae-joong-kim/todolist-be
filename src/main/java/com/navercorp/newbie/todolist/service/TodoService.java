@@ -1,5 +1,6 @@
 package com.navercorp.newbie.todolist.service;
 
+import com.navercorp.newbie.todolist.config.FileSafer;
 import com.navercorp.newbie.todolist.config.ObjectStorage;
 import com.navercorp.newbie.todolist.domain.Todo;
 import com.navercorp.newbie.todolist.dto.TodoCreateForm;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -19,24 +19,30 @@ import java.util.List;
 public class TodoService {
     private final TodoRepository todoRepository;
     private final ObjectStorage objectStorage;
+    private final FileSafer filesafer;
 
-    public void fileUpload(MultipartFile multipartFile, String storeFileName) {
+    public boolean fileUpload(MultipartFile multipartFile, String storeFileName) throws Exception {
         if (multipartFile != null) {
             String uploadFileName = multipartFile.getOriginalFilename();
             if (uploadFileName != null) {
-                objectStorage.fileUpload(multipartFile, storeFileName);
+                if(filesafer.FileCheck(multipartFile.getBytes(), multipartFile.getOriginalFilename(), null) == true) {
+                    objectStorage.fileUpload(multipartFile, storeFileName);
+                    return true;
+                }
             }
         }
+        return false;
     }
 
-    public Todo createTodo(TodoCreateForm todoCreateForm) {
+    public Todo createTodo(TodoCreateForm todoCreateForm) throws Exception {
         Todo todo = new Todo();
         todo.create(todoCreateForm);
 
-        MultipartFile file = todoCreateForm.getFile();
+        MultipartFile multipartFile = todoCreateForm.getFile();
         String storeFileName = todo.getStoreFileName();
 
-        fileUpload(file, storeFileName);
+        if(fileUpload(multipartFile, storeFileName) == false)
+            todo.setFileName();
 
         return todoRepository.save(todo);
     }
@@ -51,14 +57,15 @@ public class TodoService {
         return todoRepository.findById(id).get();
     }
 
-    public Todo updateTodo(Long id, TodoUpdateForm todoUpdateForm) throws IOException {
+    public Todo updateTodo(Long id, TodoUpdateForm todoUpdateForm) throws Exception {
         Todo todo = todoRepository.findById(id).get();
         todo.update(todoUpdateForm);
 
         MultipartFile multipartFile = todoUpdateForm.getFile();
         String storeFileName = todo.getStoreFileName();
 
-        fileUpload(multipartFile, storeFileName);
+        if(fileUpload(multipartFile, storeFileName) == false)
+            todo.setFileName();
 
         return todoRepository.save(todo);
     }

@@ -30,7 +30,6 @@ class TodoServiceTest {
         todoCreateForm.setTitle(title);
         todoCreateForm.setDescription(description);
         todoCreateForm.setFile(multipartFile);
-
         return todoCreateForm;
     }
 
@@ -40,12 +39,11 @@ class TodoServiceTest {
         todoUpdateForm.setDescription(description);
         todoUpdateForm.setFile(file);
         todoUpdateForm.setIsDone(isDone);
-
         return todoUpdateForm;
     }
 
     @BeforeEach
-    void beforeEach() {
+    void beforeEach() throws Exception {
         // given
         String title1 = "테스트 제목 - 1";
         String description1 = "테스트 본문 - 1";
@@ -59,7 +57,7 @@ class TodoServiceTest {
 
     @Test
     @Transactional
-    void createTodo() {
+    void createTodo() throws Exception {
 
         // given
         String title = "테스트 제목";
@@ -84,7 +82,7 @@ class TodoServiceTest {
 
     @Test
     @Transactional
-    void readTodoAsList() {
+    void readTodoAsList() throws Exception {
 
         // given
         String title = "테스트 제목";
@@ -141,7 +139,7 @@ class TodoServiceTest {
     }
 
     @Test
-    void readTodoByStoreFileName() {
+    void readTodoByStoreFileName() throws Exception {
 
         // given
         String title = "테스트 제목";

@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,7 +22,7 @@ public class TodoController {
     private final ModelMapper modelMapper;
 
     @PostMapping
-    public TodoGetDetailResponseDto createTodo(TodoCreateForm todoCreateForm) throws IOException {
+    public TodoGetDetailResponseDto createTodo(TodoCreateForm todoCreateForm) throws Exception {
         Todo todo = todoService.createTodo(todoCreateForm);
         return modelMapper.map(todo, TodoGetDetailResponseDto.class);
     }
@@ -42,7 +41,7 @@ public class TodoController {
     }
 
     @PutMapping("/{id}")
-    public TodoGetResponseDto UpdateTodo(@PathVariable Long id, TodoUpdateForm todoUpdateForm) throws IOException {
+    public TodoGetResponseDto UpdateTodo(@PathVariable Long id, TodoUpdateForm todoUpdateForm) throws Exception {
         Todo todo = todoService.updateTodo(id, todoUpdateForm);
         return modelMapper.map(todo, TodoGetResponseDto.class);
     }
