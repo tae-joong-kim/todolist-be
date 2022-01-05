@@ -35,6 +35,8 @@ public class Todo {
     public void create(TodoCreateForm todoCreateForm) throws Exception {
         MultipartFile multipartFile = todoCreateForm.getFile();
 
+        System.out.println("this.uploadFileName = " + this.uploadFileName);
+        System.out.println("this.storeFileName = " + this.storeFileName);
         if(multipartFile != null){
             this.uploadFileName = multipartFile.getOriginalFilename();
             this.storeFileName = getStoreFileName(this.uploadFileName);
