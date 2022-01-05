@@ -33,12 +33,11 @@ class TodoServiceTest {
         return todoCreateForm;
     }
 
-    TodoUpdateForm getUpdateForm(String title, String description, MultipartFile file, Boolean isDone) {
+    TodoUpdateForm getUpdateForm(String title, String description, MultipartFile file) {
         TodoUpdateForm todoUpdateForm = new TodoUpdateForm();
         todoUpdateForm.setTitle(title);
         todoUpdateForm.setDescription(description);
         todoUpdateForm.setFile(file);
-        todoUpdateForm.setIsDone(isDone);
         return todoUpdateForm;
     }
 
@@ -75,7 +74,6 @@ class TodoServiceTest {
         assertThat(todo.getDescription()).isEqualTo(description);
         assertThat(todo.getUploadFileName()).isEqualTo(mockMultipartFile.getOriginalFilename());
         assertThat(todo.getStoreFileName()).isNotNull();
-        assertThat(todo.getIsDone()).isEqualTo(Boolean.FALSE);
         assertThat(todo.getCreatedAt()).isNotNull();
         assertThat(todo.getModifiedAt()).isNotNull();
     }
@@ -118,7 +116,6 @@ class TodoServiceTest {
         assertThat(serviceTodo.getDescription()).isEqualTo(repositoryTodo.getDescription());
         assertThat(serviceTodo.getUploadFileName()).isEqualTo(repositoryTodo.getUploadFileName());
         assertThat(serviceTodo.getStoreFileName()).isEqualTo(repositoryTodo.getStoreFileName());
-        assertThat(serviceTodo.getIsDone()).isEqualTo(repositoryTodo.getIsDone());
         assertThat(serviceTodo.getCreatedAt()).isEqualTo(repositoryTodo.getCreatedAt());
         assertThat(serviceTodo.getModifiedAt()).isEqualTo(repositoryTodo.getModifiedAt());
     }
@@ -158,7 +155,6 @@ class TodoServiceTest {
         assertThat(foundTodo.getDescription()).isEqualTo(createdTodo.getDescription());
         assertThat(foundTodo.getUploadFileName()).isEqualTo(createdTodo.getUploadFileName());
         assertThat(foundTodo.getStoreFileName()).isEqualTo(createdTodo.getStoreFileName());
-        assertThat(foundTodo.getIsDone()).isEqualTo(createdTodo.getIsDone());
         assertThat(foundTodo.getCreatedAt()).isEqualTo(createdTodo.getCreatedAt());
         assertThat(foundTodo.getModifiedAt()).isEqualTo(createdTodo.getModifiedAt());
     }

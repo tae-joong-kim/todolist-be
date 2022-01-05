@@ -11,7 +11,6 @@ public class TodoGetDetailResponseDto {
     private String description;
     private String uploadFileName;
     private String storeFileName;
-    private Boolean isDone;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 }
