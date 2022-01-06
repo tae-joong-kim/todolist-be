@@ -7,6 +7,7 @@ import com.navercorp.newbie.todolist.dto.TodoCreateForm;
 import com.navercorp.newbie.todolist.dto.TodoUpdateForm;
 import com.navercorp.newbie.todolist.repository.TodoRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +17,7 @@ import java.util.List;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class TodoService {
     private final TodoRepository todoRepository;
     private final ObjectStorage objectStorage;
@@ -39,13 +41,24 @@ public class TodoService {
         Todo todo = new Todo();
         todo.create(todoCreateForm);
 
+        log.info("service.createTodo = {}", todo);
+
         MultipartFile multipartFile = todoCreateForm.getFile();
         String storeFileName = todo.getStoreFileName();
 
-        if(fileUpload(multipartFile, storeFileName) == false)
+        log.info("sevice-createTodo -> service-fileUpload");
+        if(fileUpload(multipartFile, storeFileName) == false) {
+            log.trace("service-fileUpload return false");
             todo.setFileName();
+        }else{
+            log.info("service-fileUpload return true");
+        }
 
-        return todoRepository.save(todo);
+        log.info("sevice-createTodo -> repository-save");
+        Todo save = todoRepository.save(todo);
+        log.info("Todo saved = {}", save);
+
+        return save;
     }
 
     @Transactional(readOnly = true)

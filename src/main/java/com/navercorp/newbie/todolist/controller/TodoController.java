@@ -7,6 +7,7 @@ import com.navercorp.newbie.todolist.dto.TodoGetResponseDto;
 import com.navercorp.newbie.todolist.dto.TodoUpdateForm;
 import com.navercorp.newbie.todolist.service.TodoService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/todo")
+@Slf4j
 public class TodoController {
     
     private final TodoService todoService;
@@ -23,6 +25,7 @@ public class TodoController {
 
     @PostMapping
     public TodoGetDetailResponseDto createTodo(TodoCreateForm todoCreateForm) throws Exception {
+        log.info("controller-createTodo -> service.createTodo");
         Todo todo = todoService.createTodo(todoCreateForm);
         return modelMapper.map(todo, TodoGetDetailResponseDto.class);
     }
