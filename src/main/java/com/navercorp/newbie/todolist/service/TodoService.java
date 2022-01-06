@@ -26,12 +26,20 @@ public class TodoService {
     public boolean fileUpload(MultipartFile multipartFile, String storeFileName) throws Exception {
         if (multipartFile != null) {
             String uploadFileName = multipartFile.getOriginalFilename();
+            log.info("service.fileUpload - success");
             if (uploadFileName != null) {
-                if(filesafer.FileCheck(multipartFile.getBytes(), multipartFile.getOriginalFilename(), null) == true) {
+                log.info("service.fileUpload - success - success");
+                if (filesafer.FileCheck(multipartFile.getBytes(), multipartFile.getOriginalFilename(), null) == true) {
+                    log.info("service.fileUpload - success - success - storage start");
                     objectStorage.fileUpload(multipartFile, storeFileName);
+                    log.info("service.fileUpload - success - success - storage end");
                     return true;
+                }else {
+                    log.info("service.fileUpload - success - failed");
                 }
             }
+        }else{
+            log.info("service.fileUpload - failed");
         }
         return false;
     }
