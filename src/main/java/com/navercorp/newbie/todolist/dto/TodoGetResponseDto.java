@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 public class TodoGetResponseDto {
     private Long id;
     private String title;
-    private Boolean isDone;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 }

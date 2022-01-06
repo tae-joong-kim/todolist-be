@@ -25,8 +25,6 @@ public class Todo {
     private String uploadFileName;
     private String storeFileName;
 
-    private Boolean isDone;
-
     @Column(updatable = false)
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
@@ -42,7 +40,6 @@ public class Todo {
 
         this.title = todoCreateForm.getTitle();
         this.description = todoCreateForm.getDescription();
-        this.isDone = Boolean.FALSE;
         this.createdAt = LocalDateTime.now();
         this.modifiedAt = this.createdAt;
     }
@@ -57,7 +54,6 @@ public class Todo {
 
         this.title = todoUpdateForm.getTitle();
         this.description = todoUpdateForm.getDescription();
-        this.isDone = todoUpdateForm.getIsDone();
         this.modifiedAt = LocalDateTime.now();
     }
 
