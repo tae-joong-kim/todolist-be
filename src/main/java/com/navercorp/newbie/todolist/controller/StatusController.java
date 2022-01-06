@@ -10,4 +10,5 @@ public class StatusController {
     public String statusCheck() {
         return "ok";
     }
+
 }
