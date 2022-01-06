@@ -34,8 +34,6 @@ public class TodoService {
         return false;
     }
 
-    // log4j, logback 로컬에 파일, 실시간 전송
-
     public Todo createTodo(TodoCreateForm todoCreateForm) throws Exception {
         Todo todo = new Todo();
         todo.create(todoCreateForm);
